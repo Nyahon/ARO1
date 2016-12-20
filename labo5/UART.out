@@ -1,0 +1,12 @@
+\BOOKMARK [1][-]{section.1}{Description g\351n\351rale}{}% 1
+\BOOKMARK [1][-]{section.2}{Architecture}{}% 2
+\BOOKMARK [1][-]{section.3}{R\351alisation}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Le bloc shift-register}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Le bloc compteur 0-3}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.3}{Le bloc compteur 0-7}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.4}{La machine d\220\351tat}{section.3}% 7
+\BOOKMARK [1][-]{section.4}{Int\351gration et simulation}{}% 8
+\BOOKMARK [2][-]{subsection.4.1}{Int\351gration}{section.4}% 9
+\BOOKMARK [2][-]{subsection.4.2}{Simulation sous Logisim}{section.4}% 10
+\BOOKMARK [2][-]{subsection.4.3}{Synth\350se et test de fonctionnement r\351el}{section.4}% 11
+\BOOKMARK [1][-]{section.5}{Conclusion}{}% 12
