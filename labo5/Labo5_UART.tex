@@ -6,6 +6,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb,amsfonts,textcomp}
 \usepackage{color}
+\usepackage[dvipsnames]{xcolor}
 \usepackage{array}
 \usepackage{supertabular}
 \usepackage{hhline}
@@ -13,7 +14,7 @@
 \usepackage{capt-of}
 \usepackage[pdftex]{graphicx}
 \usepackage{sectsty}
-\usepackage{tcolorbox}
+\usepackage[most]{tcolorbox}
 \usepackage{textcomp}
 \usepackage{courier}
 \usepackage[font={small,it}]{caption}
@@ -31,6 +32,9 @@
 %toutes les sections auront cette couleur
 \sectionfont{\color{havelockBlue}}
 \subsectionfont{\color{havelockBlue}}
+
+\newcommand{\red}[1]{\textbf{\textcolor{OrangeRed}{#1}}}
+
 %début du document
 \begin{document}
 
@@ -91,8 +95,9 @@ De plus, l’état de repos de la ligne est fixé à 1.
 \paragraph %démarre un paragraphe
 {Spécification - Max 1/2 page } 
 Indiquez si vous réalisez la partie émetteur ou la partie récepteur de l’UART
-Placez ici les spécifications de votre circuit en décrivant son fonctionnement. Votre circuit devra être conforme à ces spécifications.
+Placez ici les spécifications de votre circuit en décrivant son fonctionnement. Votre circuit devra être conforme à ces spécifications.\\
 
+Nous avons réalisé la partie émetteur de l'UART. Notre circuit procède à l'envoie de 8 bits successifs donnés en entrée selon la forme demandée. Le circuit envoie la valeurs zéro sur deux temps d'horloge pour indiqué le début de l'envoi au circuit récepteur. L'envoie de chaque bits ce fait ensuite sur une durée de 4 temps d'horloge. Sur le quatrième temps l'instruction "Shift-right" est transmise au shift-register de manière a envoyer le bits suivant durant la séquence d'envoie suivante.
 %fin de l'encadré
 \end{tcolorbox}
 
@@ -104,6 +109,15 @@ Dessinez le schéma bloc complet de votre circuit. Ce circuit contient entre aut
 
 Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge)\\
 
+\red{Schéma final de l'UART : A REMPLACER}\\
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{src/schema_UART}
+	\captionof{figure}{UART}
+	\label{fig:UART}
+\end{figure}
+
 
 \end{tcolorbox}
 
@@ -111,15 +125,61 @@ Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge
 \section {Réalisation}
 \subsection{Le bloc shift-register}
 Ce bloc sur 8 bits a 4 modes de fonctionnement. Vous devez le refaire entièrement avec des bascules et des multiplexeurs.
-\begin{tcolorbox}[colframe=Monokaimagenta,colback=white]
+
+\begin{tcolorbox}[colframe=Monokaimagenta,colback=white,breakable, enhanced]
 \paragraph{Conception et tests - Max 1 page}
 Insérez une capture d’écran pour présenter votre bloc shift-register. Expliquez brièvement son fonctionnement.
 Indiquez comment vous avez testé les 4 modes de fonctionnement afin de le valider.
-Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge)
-\\
+Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge)\\
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{src/SR_8b_bloc}
+	\captionof{figure}{Bloc du Shift Register 8 bits}
+	\label{fig:SR_8b_bloc}
+\end{figure}
+Nous avons pour le bloc Shift Register 8 bits les entrées, sorties suivantes : 
+\begin{itemize}
+	\item Le signal de commande "S" qui donne les instructions sur le mode de fonctionnement du registre.
+	\item Les entrées "L" et "R" qui permette d'entrer une valeur depuis la gauche ou la droite au moment du shift.
+	\item Un bus "Inflow" qui permet d'entrer la séquence a charger.
+	\item Un bus "Outflow" qui prend les valeurs des huit état du registre.
+	\item Le bit de sortie qui prend la valeur du bit de poids faible en sortie du registre.
+\end{itemize}
+
+Le signal de commande est codés comme suit :
+\begin{center}
+	\begin{tabular}{c|l}
+		00	&	Hold\\
+		01	&	Load\\
+		10	&	Shift Right\\
+		11	&	Shift Left\\
+	\end{tabular}
+\end{center}
+
+Le shift register 8 bits que nous avons conçu est une combinaison de deux shift Register 4 bits interconnectés. 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{src/SR_8b}
+	\captionof{figure}{Shift Register 8 bits}
+	\label{fig:SR_8b}
+\end{figure}
+Le registre "SR\_2" a 4bits prend en entrée les bits de poids fort (gauche) du flux d'entrée. Il transmet sont bit de poids faible Q0 au second registre "SR\_1" qui traite les bits de poids faible. La flux "ouflow" de sortie est la combinaison des sortie "Q0-Q3" des deux blocs et le "bit-out" le bit de poids faible de cette séquence.
+
+Chaque "shift register" à 4bits et structuré comme suit.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{src/SR_4b}
+	\captionof{figure}{Shift Register 4 bits}
+	\label{fig:SR_4b}
+\end{figure}
+Chaque bascule prend en entrée la valeur donnée par un multiplexer en fonction du code de commande. Cette valeur est la valeur du bit donné par le flux d'entrée ("inflow" : Shift Register 8bits) au moment de la commande "Load" (01). La valeur de l'état "Q+1" lors d'un "Shift Left" (10). La valeur de l'état "Q-1" lors d'un "Shift Right" (11). La valeur "Q" actuelle en mode "Hold" (00). Le changement se fait à chaque flanc montant de l'horloge.
+
 \end{tcolorbox}
 \subsection{Le bloc compteur 0-3}
 Le premier compteur demandé compte de 0 à 3. Ce compteur comprend une entrée de remise à 0 synchrone et une sortie indiquant que le compteur a atteint sa valeur maximum.
+
+
 \begin{tcolorbox}[colframe=Monokaimagenta,colback=white]
 \paragraph{Conception et tests - Max 1 page }
 Insérez une capture d’écran pour présenter votre bloc compteur 0-3. Expliquez sa réalisation et son fonctionnement.
