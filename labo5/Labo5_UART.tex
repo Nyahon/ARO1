@@ -184,11 +184,43 @@ Le premier compteur demandé compte de 0 à 3. Ce compteur comprend une entrée 
 \paragraph{Conception et tests - Max 1 page }
 Insérez une capture d’écran pour présenter votre bloc compteur 0-3. Expliquez sa réalisation et son fonctionnement.
 Indiquez comment vous avez testé les différents modes de fonctionnement afin de le valider. Vous pouvez ajouter un chronogramme.
-Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge)
-\\
+Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge)\\
+
+\red{Notre compteur n'a pas l'entrée de remise à zéro synchrone. Il se remet à zéro d'office quand on ne compte pas.}\\
+
+Le compteur 0-3 que nous avons implémenté, reçoit comme entrées l'indication de compter, et transmet en sortie la valeur à laquelle il se trouve ainsi qu'un bit indiquant le compteur à terminé de compter jusqu'à 3.\\	
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{src/CPT_03_1}
+	\captionof{figure}{Compteur de 0 à 3}
+	\label{fig:CPT_03}
+\end{figure}
+Selon les besoins du laboratoire et pour des raison d'optimisation si la valeur d'entrée n'est pas à 1 et ne donne pas l'ordre de compter, le compteur se remet automatiquement à 0. Il est donc prêt à recommencer une séquence. Nous n'avons jamais besoin d'interrompre ce compteur et de garder sa valeur en mémoire. L'utilisation d'une commande de remise à zéro est donc superflue.\\
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{src/chrono_CPT_03_1}
+	\captionof{figure}{Chronogram Compteur de 0 à 3}
+	\label{fig:CPT_03}
+\end{figure}
+Ce chronogram illustre le fonctionnement du compteur et met en évidence la remise à zéro automatique du compteur.
+
+\red{Si tu as encore ton schéma ou ta table d'état sur la base du quel t'as conçu le compteur il faudrait le mettre sinon on le refera.}\\
+
+Pour des raisons de conception de notre machine d'état, la transition entre l'état dans lequel le compteur compte et le celui ou le shift de la valeur se fait, nécessite un battement d'horloge. De ce fait nous avons utilisé un compteur qui donne l'indication de fin de comptage a 2 et non 3.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{src/CPT_03_2}
+	\captionof{figure}{Compteur de 0 à 2}
+	\label{fig:CPT_03}
+\end{figure}
+
+
 \end{tcolorbox}
 \subsection{Le bloc compteur 0-7}
 Le deuxième compteur demandé compte de 0 à 7. Ce compteur comprend une entrée de remise à 0 synchrone, une entrée enable pour l’activer et une sortie indiquant que le compteur a atteint sa valeur maximum.
+
+
 \begin{tcolorbox}[colframe=Monokaimagenta,colback=white]
 \paragraph{Conception et tests - Max 1 page}
 Insérez une capture d’écran pour présenter votre bloc compteur 0-7. Expliquez sa réalisation et son fonctionnement. Inutile de reprendre les explications du paragraphe précédent 3.2. Expliquez simplement ce que vous avez dû changer ou rajouter pour passer du compteur 0-3 au compteur 0-7.
