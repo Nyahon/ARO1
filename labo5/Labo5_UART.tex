@@ -174,11 +174,10 @@ Chaque "shift register" à 4bits et structuré comme suit.
 	\label{fig:SR_4b}
 \end{figure}
 Chaque bascule prend en entrée la valeur donnée par un multiplexer en fonction du code de commande. Cette valeur est la valeur du bit donné par le flux d'entrée ("inflow" : Shift Register 8bits) au moment de la commande "Load" (01). La valeur de l'état "Q+1" lors d'un "Shift Left" (10). La valeur de l'état "Q-1" lors d'un "Shift Right" (11). La valeur "Q" actuelle en mode "Hold" (00). Le changement se fait à chaque flanc montant de l'horloge.
-
 \end{tcolorbox}
+
 \subsection{Le bloc compteur 0-3}
 Le premier compteur demandé compte de 0 à 3. Ce compteur comprend une entrée de remise à 0 synchrone et une sortie indiquant que le compteur a atteint sa valeur maximum.
-
 
 \begin{tcolorbox}[colframe=Monokaimagenta,colback=white, breakable, enhanced]
 \paragraph{Conception et tests - Max 1 page }
@@ -214,23 +213,33 @@ Pour des raisons de conception de notre machine d'état, la transition entre l'�
 	\captionof{figure}{Compteur de 0 à 2}
 	\label{fig:CPT_03_2}
 \end{figure}
-
-
 \end{tcolorbox}
+
 \subsection{Le bloc compteur 0-7}
 Le deuxième compteur demandé compte de 0 à 7. Ce compteur comprend une entrée de remise à 0 synchrone, une entrée enable pour l’activer et une sortie indiquant que le compteur a atteint sa valeur maximum.
 
-\begin{tcolorbox}[colframe=Monokaimagenta,colback=white]
+\begin{tcolorbox}[colframe=Monokaimagenta,colback=white, breakable, enhanced]
 \paragraph{Conception et tests - Max 1 page}
 Insérez une capture d’écran pour présenter votre bloc compteur 0-7. Expliquez sa réalisation et son fonctionnement. Inutile de reprendre les explications du paragraphe précédent 3.2. Expliquez simplement ce que vous avez dû changer ou rajouter pour passer du compteur 0-3 au compteur 0-7.
 Indiquez comment vous avez testé les différents modes de fonctionnement afin de le valider. Vous pouvez ajouter un chronogramme.
 Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge)\\
 
+Le compteur 7 que nous avons implémenté nous permet de compter le nombre de bits qui on été envoyé, de manière à savoir quand la séquence de 8 bits à été envoyée au complet.\\
+Ce compteur doit donc garder la valeur en mémoire quand l'ordre le bit "count" est a zéro et reprendre dans le cas contraire. Il est donc également nécessaire d'avoir une entrée "reset" qui permet de le remettre à 0.\\
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{src/CPT_07}
+	\captionof{figure}{Compteur de 0 à 7}
+	\label{fig:CPT_07}
+\end{figure}
+	
+
 
 \end{tcolorbox}
+
 \subsection{La machine d’état}
 Cette machine d’état de type 1 parmi M contrôle les deux compteurs et le shift register. 
-\begin{tcolorbox}[colframe=Monokaimagenta,colback=white]
+\begin{tcolorbox}[colframe=Monokaimagenta,colback=white, breakable, enhanced]
 \paragraph{Conception Max 3 pages}
 Précisez les entrées et sorties de votre machine d’état
 Insérez un graphe des états et une table des états. Donnez des explications sur le fonctionnement de votre machine. Quel est son Type ?
@@ -241,7 +250,7 @@ Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge
 \section {Intégration et simulation}
 \subsection{Intégration}
 Suivant votre partie à concevoir, vous devez réalisé l’UART en interconnectant les différents blocs. 
-\begin{tcolorbox}[colframe=Monokaimagenta,colback=white]
+\begin{tcolorbox}[colframe=Monokaimagenta,colback=white, breakable, enhanced]
 \paragraph{Réalisation et simulation Logisim - Max 1 page}
 Insérez une capture d’écran de l’UART complet sous Logisim
 Expliquez le fonctionnement global de l’UART
@@ -250,7 +259,7 @@ Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge
 \end{tcolorbox}
  \subsection{Simulation sous Logisim}
 L’UART réalisé est ensuite testé en simulation sous Logisim.
-\begin{tcolorbox}[colframe=Monokaimagenta,colback=white]
+\begin{tcolorbox}[colframe=Monokaimagenta,colback=white, breakable, enhanced]
 \paragraph{Réalisation et simulation Logisim - Max 2 pages}
 Indiquez comment vous simulez votre UART sous Logisim (seul ou avec le générateur fourni), ET avec un UART d’un autre groupe (indiquez quel groupe)
 Insérez un ou plusieurs chronogrammes, annotez-le(s) et expliquez pourquoi le fonctionnement est correct et conforme aux spécifications.
@@ -260,7 +269,7 @@ Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge
  \subsection{Synthèse et test de fonctionnement réel}
 Synthèse et configuration du matériel, test de fonctionnement.
 L’UART finalement synthétisé et chargé dans une carte, une carte émetteur sera reliée à une carte récepteur afin de tester une transmission de données.
-\begin{tcolorbox}[colframe=Monokaimagenta,colback=white]
+\begin{tcolorbox}[colframe=Monokaimagenta,colback=white, breakable, enhanced]
 \paragraph{Essais avec une carte - Max 1 page}
 Indiquez comment vous faites le test (et avec un groupe différent de la simulation). Quelles données choisissez-vous pour faire les essais ?Vous devez faire valider votre circuit en fonctionnement au professeur ou à l’assistant
 Commentez brièvement votre expérience dans cette étape en mentionnant, par exemple, des éventuelles difficultés à faire fonctionner le circuit ou à configurer la carte, etc.
@@ -268,7 +277,7 @@ Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge
 \\
 \end{tcolorbox}
 \section {Conclusion}
-\begin{tcolorbox}[colframe=Monokaimagenta,colback=white]
+\begin{tcolorbox}[colframe=Monokaimagenta,colback=white, breakable, enhanced]
 \paragraph{Conclusion - Max 1/2 page}
 Cette section est libre pour que vous fassiez une analyse critique de votre laboratoire
 Commentez et analysez 
