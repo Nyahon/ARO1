@@ -260,7 +260,7 @@ On peut donc établir le logiram suivant:
 Pour ensuite passer au compteur à 7 (3bits) on ajoute une fois la séquence de porte suivante :
 \begin{figure}[H]
 	\centering
-	\includegraphics[]{src/sequence_CPT3}
+	\includegraphics[scale=0.5]{src/sequence_CPT3}
 	\captionof{figure}{Séquence de porte}
 	\label{fig:sequence_CPT3}
 \end{figure}
@@ -274,7 +274,13 @@ Ainsi qu'une bascule supplémentaire pour obtenir le résultat suivant.
 	\label{fig:CPT_07}
 \end{figure}
 
-
+Selon le chronogram établi sur la base de ce compteur on vérifie que le compteur fonctionne selon le cahier des charges.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{src/chrono_CPT7}
+	\captionof{figure}{chronogram du compteur de 0 à 7}
+	\label{fig:chronogramCPT7}
+\end{figure}
 
 
 \end{tcolorbox}
@@ -288,6 +294,85 @@ Insérez un graphe des états et une table des états. Donnez des explications s
 Donnez les équations des états futurs et insérez une capture d’écran de la réalisation de votre machine.
 Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge)
 \\
+
+Nous avons conçu une machine d'état sur le principe d'une machine de Moore composée de 4 états. 
+\begin{itemize}
+	\item "Wait"\\
+	La machine est en état d'attente jusqu'à ce que le signal "send" soit reçu.
+	\item "Start"\\
+	La machine lance la séquence d'envoie, et charge les valeurs d'entrées dans le registre.
+	\item "Send"
+	La michine compte 4 battements d'horloge.
+	\item "Shift"
+	La machine envoie le signal au registre pour faire un "shift right".
+\end{itemize}
+
+\red{Photo du graph d'état à remplacer par ta version}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{src/graphe_etats}
+	\captionof{figure}{Graphe d'états}
+	\label{fig:graphe_etats}
+\end{figure}
+
+Sur la base de ce graphe nous avons ressortis les équations des états future suivantes:\\
+$Q_0^+ = $\\
+$Q_0^+ = $\\
+$Q_0^+ = $\\
+$Q_0^+ = $\\
+\red{compléter ces équations sur la base du graphe d'états}\\
+
+Les entrées sorties dont nous avons besoin pour la machines d'état se retrouvent dans le bloc de la machine.
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 0.8]{src/bloc_FSM}
+	\captionof{figure}{Bloc de la machine d'états}
+	\label{fig:bloc_FSM}
+\end{figure}
+
+\begin{itemize}
+	\item Entrées :
+	\begin{itemize}
+		\item CPT3 : retour de la valeur de CPT3 indiquant la fin de comptage
+		\item CPT7 : retour de la valeur de CPT7 indiquant le fin du comptage
+		\item Send : indication du début d'un envoie (selon le bouton send)
+		\item Reset: reset de la machine d'état vers sont état d'attente ("Wait")
+		\item clk  : signal d'horloge
+	\end{itemize}
+	\item Sorties :
+	\begin{itemize}
+		\item Q$_0$\_out : valeur de l'état Q$_0$, indique quand la machine est en attente
+		\item SR		 : code commande pour le registre a décalage
+		\item CPT3\_C  	 : bit de commande pour lancer le comptage de CPT3
+		\item CPT7\_C	 : bit de commande pour lancer le comptage de CPT7
+		\item LED        : signal pour la LED, indique quand une séquence d'envoie est terminée
+	\end{itemize}
+\end{itemize}
+
+Sur cette base nous avons implémenté la machine d'état suivante.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{src/FSM}
+	\captionof{figure}{Logigram de la machine d'état}
+	\label{fig:FSM}
+\end{figure}
+
+\red{ajouter les détails sur le fonctionnement}\\
+séquence de la machine et action des états :
+\begin{enumerate}
+	\item wait (aucune action)\\
+	(entrée : send) \textrightarrow\ start
+	\item start (signal au SR "Load", 2 coup d'horloge)
+	\item send (signal a CPT3\_C "count")\\
+	(entrée : CPT3) \textrightarrow\ shift
+	\item shift (signal au SR : "shift", CPT7 count) (1 coup d'horloge)\\
+	\textrightarrow\ send
+	\item send \\
+	$ \quad \vdots \quad \vdots$
+	\item shift (signal au SR : "shift", CPT7 count) (1 coup d'horloge)\\
+	(entrée : CPT7) \textrightarrow\ wait
+\end{enumerate}
+
 \end{tcolorbox}
 \section {Intégration et simulation}
 \subsection{Intégration}
@@ -298,6 +383,32 @@ Insérez une capture d’écran de l’UART complet sous Logisim
 Expliquez le fonctionnement global de l’UART
 Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge)
 \\
+
+Avec tous les éléments implémentés précédemment nous les avons combiné de manière à obtenir une UART sous la forme d'un émetteur 8 bits.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{src/UART}
+	\captionof{figure}{UART, émetteur}
+	\label{fig:UART4}
+\end{figure}
+
+\begin{itemize}
+	\item le signal "reset" permet de remettre tout l'unité dans son mode d'attente prête à envoyer une séquence.
+	\item le signal "send" transmet à la machine d'état de sortir du mode d'attente et de commencer à envoyer la séquence.
+	\item l'envoie se fait par la sortie Bin\_out selon l'avancement de a machine d'état et les valeurs entrées dans le bus "entry".
+	\item une fois la séquence terminée la machine d'état envoie le signal de fin par la sortie "LED" et repasse en mode d'attente.
+	\item le signal sur Bin\_out est alors à 1 selon la combinaison du signal "SR" de la machine d'état et de la valeur Q$_0$\_out qui est à 1.
+\end{itemize}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{src/bin_out_1}
+	\captionof{figure}{système logique bin\_out}
+	\label{fig:bin_out_1}
+\end{figure}
+
+
+
+
 \end{tcolorbox}
  \subsection{Simulation sous Logisim}
 L’UART réalisé est ensuite testé en simulation sous Logisim.
