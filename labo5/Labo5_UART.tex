@@ -225,7 +225,7 @@ Indiquez comment vous avez testé les différents modes de fonctionnement afin d
 Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge)\\
 
 Le compteur 7 que nous avons implémenté nous permet de compter le nombre de bits qui on été envoyé, de manière à savoir quand la séquence de 8 bits à été envoyée au complet.\\
-Ce compteur doit donc garder la valeur en mémoire quand l'ordre le bit "count" est a zéro et reprendre dans le cas contraire. Il est donc également nécessaire d'avoir une entrée "reset" qui permet de le remettre à 0.\\
+Ce compteur doit donc garder la valeur en mémoire quand l'ordre le bit "count" est a zéro et reprendre dans le cas contraire. Il est donc également nécessaire d'avoir une entrée "Reset" qui permet de le remettre à 0.\\
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{src/CPT_07}
@@ -233,6 +233,48 @@ Ce compteur doit donc garder la valeur en mémoire quand l'ordre le bit "count" 
 	\label{fig:CPT_07}
 \end{figure}
 	
+Pour implémenter le compteur à 7 (3bits), on précède sur la base d'un compteur à 3 (2bits) et on rajoute une fois la séquence de portes logiques.\\
+Depuis la table d'états suivante :
+\begin{center}
+	\begin{tabular}{c|c|c}
+			& 	Send = 0 &	Send = 1\\ \hline 
+		00	&	00		 & 01 \\
+		01	&	01	     & 10 \\
+		10	&	10       & 11 \\
+		11	&	11 		 & 00 \\
+		$Q_1Q_0$&$Q_1^+Q_0^+$&\\
+	\end{tabular}
+\end{center}
+Depuis cette table on peut en sortie les équations suivante : \\
+$Q_0^+ = S'Q_0 + S Q_0' = S \oplus Q_0$\\
+$Q_1^+ = S'Q_1+S(Q_1\oplus Q_0) = $ \red{je n'arrive pas trouver cette étape} $= Q_0 \oplus (SQ_0)$\\
+
+On peut donc établir le logiram suivant:
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{src/CPT_03}
+	\captionof{figure}{Compteur de 0 à 3}
+	\label{fig:CPT_03}
+\end{figure}
+
+Pour ensuite passer au compteur à 7 (3bits) on ajoute une fois la séquence de porte suivante :
+\begin{figure}[H]
+	\centering
+	\includegraphics[]{src/sequence_CPT3}
+	\captionof{figure}{Séquence de porte}
+	\label{fig:sequence_CPT3}
+\end{figure}
+
+Ainsi qu'une bascule supplémentaire pour obtenir le résultat suivant.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{src/CPT_07}
+	\captionof{figure}{Compteur de 0 à 7}
+	\label{fig:CPT_07}
+\end{figure}
+
+
 
 
 \end{tcolorbox}
