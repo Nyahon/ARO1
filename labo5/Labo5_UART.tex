@@ -126,7 +126,7 @@ Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge
 \subsection{Le bloc shift-register}
 Ce bloc sur 8 bits a 4 modes de fonctionnement. Vous devez le refaire entièrement avec des bascules et des multiplexeurs.
 
-\begin{tcolorbox}[colframe=Monokaimagenta,colback=white,breakable, enhanced]
+\begin{tcolorbox}[colframe=Monokaimagenta,colback=white, breakable, enhanced]
 \paragraph{Conception et tests - Max 1 page}
 Insérez une capture d’écran pour présenter votre bloc shift-register. Expliquez brièvement son fonctionnement.
 Indiquez comment vous avez testé les 4 modes de fonctionnement afin de le valider.
@@ -180,7 +180,7 @@ Chaque bascule prend en entrée la valeur donnée par un multiplexer en fonction
 Le premier compteur demandé compte de 0 à 3. Ce compteur comprend une entrée de remise à 0 synchrone et une sortie indiquant que le compteur a atteint sa valeur maximum.
 
 
-\begin{tcolorbox}[colframe=Monokaimagenta,colback=white]
+\begin{tcolorbox}[colframe=Monokaimagenta,colback=white, breakable, enhanced]
 \paragraph{Conception et tests - Max 1 page }
 Insérez une capture d’écran pour présenter votre bloc compteur 0-3. Expliquez sa réalisation et son fonctionnement.
 Indiquez comment vous avez testé les différents modes de fonctionnement afin de le valider. Vous pouvez ajouter un chronogramme.
@@ -193,15 +193,15 @@ Le compteur 0-3 que nous avons implémenté, reçoit comme entrées l'indication
 	\centering
 	\includegraphics[width=\textwidth]{src/CPT_03_1}
 	\captionof{figure}{Compteur de 0 à 3}
-	\label{fig:CPT_03}
+	\label{fig:CPT_03_1}
 \end{figure}
 Selon les besoins du laboratoire et pour des raison d'optimisation si la valeur d'entrée n'est pas à 1 et ne donne pas l'ordre de compter, le compteur se remet automatiquement à 0. Il est donc prêt à recommencer une séquence. Nous n'avons jamais besoin d'interrompre ce compteur et de garder sa valeur en mémoire. L'utilisation d'une commande de remise à zéro est donc superflue.\\
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\textwidth]{src/chrono_CPT_03_1}
+	\includegraphics[width=\textwidth]{src/chrono_CPT3_1}
 	\captionof{figure}{Chronogram Compteur de 0 à 3}
-	\label{fig:CPT_03}
+	\label{fig:chrono_CPT_03_1}
 \end{figure}
 Ce chronogram illustre le fonctionnement du compteur et met en évidence la remise à zéro automatique du compteur.
 
@@ -212,7 +212,7 @@ Pour des raisons de conception de notre machine d'état, la transition entre l'�
 	\centering
 	\includegraphics[width=\textwidth]{src/CPT_03_2}
 	\captionof{figure}{Compteur de 0 à 2}
-	\label{fig:CPT_03}
+	\label{fig:CPT_03_2}
 \end{figure}
 
 
@@ -220,13 +220,13 @@ Pour des raisons de conception de notre machine d'état, la transition entre l'�
 \subsection{Le bloc compteur 0-7}
 Le deuxième compteur demandé compte de 0 à 7. Ce compteur comprend une entrée de remise à 0 synchrone, une entrée enable pour l’activer et une sortie indiquant que le compteur a atteint sa valeur maximum.
 
-
 \begin{tcolorbox}[colframe=Monokaimagenta,colback=white]
 \paragraph{Conception et tests - Max 1 page}
 Insérez une capture d’écran pour présenter votre bloc compteur 0-7. Expliquez sa réalisation et son fonctionnement. Inutile de reprendre les explications du paragraphe précédent 3.2. Expliquez simplement ce que vous avez dû changer ou rajouter pour passer du compteur 0-3 au compteur 0-7.
 Indiquez comment vous avez testé les différents modes de fonctionnement afin de le valider. Vous pouvez ajouter un chronogramme.
-Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge)
-\\
+Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge)\\
+
+
 \end{tcolorbox}
 \subsection{La machine d’état}
 Cette machine d’état de type 1 parmi M contrôle les deux compteurs et le shift register. 
