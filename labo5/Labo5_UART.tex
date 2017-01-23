@@ -22,6 +22,7 @@
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage{caption}
+\usepackage{multicol}
 
 
 %Définition des couleurs
@@ -97,7 +98,7 @@ De plus, l’état de repos de la ligne est fixé à 1.
 Indiquez si vous réalisez la partie émetteur ou la partie récepteur de l’UART
 Placez ici les spécifications de votre circuit en décrivant son fonctionnement. Votre circuit devra être conforme à ces spécifications.\\
 
-Nous avons réalisé la partie émetteur de l'UART. Notre circuit procède à l'envoie de 8 bits successifs donnés en entrée selon la forme demandée. Le circuit envoie la valeurs zéro sur deux temps d'horloge pour indiqué le début de l'envoi au circuit récepteur. L'envoie de chaque bits ce fait ensuite sur une durée de 4 temps d'horloge. Sur le quatrième temps l'instruction "Shift-right" est transmise au shift-register de manière a envoyer le bits suivant durant la séquence d'envoie suivante.
+Nous avons réalisé la partie émetteur de l'UART. Notre circuit procède à l'envoi de 8 bits successifs donnés en entrée selon la forme demandée. Le circuit envoie la valeurs zéro sur deux temps d'horloge pour indiqué le début de l'envoi au circuit récepteur. L'envoi de chaque bits ce fait ensuite sur une durée de 4 temps d'horloge. Sur le quatrième temps l'instruction "Shift-right" est transmise au shift-register de manière a envoyer le bits suivant durant la séquence d'envoi suivante.
 %fin de l'encadré
 \end{tcolorbox}
 
@@ -109,7 +110,7 @@ Dessinez le schéma bloc complet de votre circuit. Ce circuit contient entre aut
 
 Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge)\\
 
-\red{Schéma final de l'UART : A REMPLACER}\\
+
 
 \begin{figure}[H]
 	\centering
@@ -141,9 +142,10 @@ Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge
 Nous avons pour le bloc Shift Register 8 bits les entrées, sorties suivantes : 
 \begin{itemize}
 	\item Le signal de commande "S" qui donne les instructions sur le mode de fonctionnement du registre.
-	\item Les entrées "L" et "R" qui permette d'entrer une valeur depuis la gauche ou la droite au moment du shift.
+	\item Les entrées "L" et "R" qui permette d'entrer une valeur depuis la gauche ou la droite au moment du shift. 
+	Dans ce laboratoire, nous utilisons le comportement de base de chargement et fixons donc ces valeurs à 0.
 	\item Un bus "Inflow" qui permet d'entrer la séquence a charger.
-	\item Un bus "Outflow" qui prend les valeurs des huit état du registre.
+	\item Un bus "Outflow" qui prend les valeurs des huit état du registre, utile pour avoir une meilleure vision de la situation (debugging).
 	\item Le bit de sortie qui prend la valeur du bit de poids faible en sortie du registre.
 \end{itemize}
 
@@ -205,8 +207,26 @@ Selon les besoins du laboratoire et pour des raison d'optimisation si la valeur 
 Ce chronogram illustre le fonctionnement du compteur et met en évidence la remise à zéro automatique du compteur.
 
 \red{Si tu as encore ton schéma ou ta table d'état sur la base du quel t'as conçu le compteur il faudrait le mettre sinon on le refera.}\\
+\begin{multicols}{2}
+	\begin{tabular}{c|l l}
+		$C,Q1,Q0$ & $Q1^+$& $Q0^+$ \\
+		\hline
+		100	&	0&1\\
+		101	&	1&0\\
+		110	&	1&1\\
+		111	&	0&0\\
+	\end{tabular}
+	
 
-Pour des raisons de conception de notre machine d'état, la transition entre l'état dans lequel le compteur compte et le celui ou le shift de la valeur se fait, nécessite un battement d'horloge. De ce fait nous avons utilisé un compteur qui donne l'indication de fin de comptage a 2 et non 3.
+	\begin{equation}
+	Q1^+ = C(Q0 + Q1)
+	\end{equation}
+		\begin{equation}
+			Q0^+ = C\overline{Q0}
+		\end{equation}
+
+\end{multicols}
+Pour des raisons de conception de notre machine d'état, la transition entre l'état dans lequel le compteur compte et le celui ou le shift de la valeur se fait, nécessite un battement d'horloge. De ce fait nous avons utilisé un compteur qui donne l'indication de fin de comptage a 2 et non 3, cela étant illustré par la porte not du and de sortie.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{src/CPT_03_2}
@@ -249,7 +269,7 @@ Depuis cette table on peut en sortie les équations suivante : \\
 $Q_0^+ = S'Q_0 + S Q_0' = S \oplus Q_0$\\
 $Q_1^+ = S'Q_1+S(Q_1\oplus Q_0) = $ \red{je n'arrive pas trouver cette étape} $= Q_0 \oplus (SQ_0)$\\
 
-On peut donc établir le logiram suivant:
+On peut donc établir le logigramme suivant:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{src/CPT_03}
@@ -300,7 +320,7 @@ Nous avons conçu une machine d'état sur le principe d'une machine de Moore com
 	\item "Wait"\\
 	La machine est en état d'attente jusqu'à ce que le signal "send" soit reçu.
 	\item "Start"\\
-	La machine lance la séquence d'envoie, et charge les valeurs d'entrées dans le registre.
+	La machine lance la séquence d'envoi, et charge les valeurs d'entrées dans le registre.
 	\item "Send"
 	La michine compte 4 battements d'horloge.
 	\item "Shift"
@@ -335,7 +355,7 @@ Les entrées sorties dont nous avons besoin pour la machines d'état se retrouve
 	\begin{itemize}
 		\item CPT3 : retour de la valeur de CPT3 indiquant la fin de comptage
 		\item CPT7 : retour de la valeur de CPT7 indiquant le fin du comptage
-		\item Send : indication du début d'un envoie (selon le bouton send)
+		\item Send : indication du début d'un envoi (selon le bouton send)
 		\item Reset: reset de la machine d'état vers sont état d'attente ("Wait")
 		\item clk  : signal d'horloge
 	\end{itemize}
@@ -345,7 +365,7 @@ Les entrées sorties dont nous avons besoin pour la machines d'état se retrouve
 		\item SR		 : code commande pour le registre a décalage
 		\item CPT3\_C  	 : bit de commande pour lancer le comptage de CPT3
 		\item CPT7\_C	 : bit de commande pour lancer le comptage de CPT7
-		\item LED        : signal pour la LED, indique quand une séquence d'envoie est terminée
+		\item LED        : signal pour la LED, indique quand une séquence d'envoi est terminée
 	\end{itemize}
 \end{itemize}
 
@@ -395,7 +415,7 @@ Avec tous les éléments implémentés précédemment nous les avons combiné de
 \begin{itemize}
 	\item le signal "reset" permet de remettre tout l'unité dans son mode d'attente prête à envoyer une séquence.
 	\item le signal "send" transmet à la machine d'état de sortir du mode d'attente et de commencer à envoyer la séquence.
-	\item l'envoie se fait par la sortie Bin\_out selon l'avancement de a machine d'état et les valeurs entrées dans le bus "entry".
+	\item l'envoi se fait par la sortie Bin\_out selon l'avancement de a machine d'état et les valeurs entrées dans le bus "entry".
 	\item une fois la séquence terminée la machine d'état envoie le signal de fin par la sortie "LED" et repasse en mode d'attente.
 	\item le signal sur Bin\_out est alors à 1 selon la combinaison du signal "SR" de la machine d'état et de la valeur Q$_0$\_out qui est à 1.
 \end{itemize}
