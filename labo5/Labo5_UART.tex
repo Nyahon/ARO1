@@ -23,6 +23,12 @@
 \usepackage{subcaption}
 \usepackage{caption}
 \usepackage{multicol}
+\usepackage{tikz}
+\usepackage{makecell}
+
+\usepackage[top=15mm,bottom=20mm,right=40mm,left=40mm]{geometry}
+ 
+\usetikzlibrary {positioning,arrows,automata}
 
 
 %Définition des couleurs
@@ -265,10 +271,11 @@ Depuis la table d'états suivante :
 		$Q_1Q_0$&$Q_1^+Q_0^+$&\\
 	\end{tabular}
 \end{center}
-Depuis cette table on peut en sortie les équations suivante : \\
-$Q_0^+ = S'Q_0 + S Q_0' = S \oplus Q_0$\\
-$Q_1^+ = S'Q_1+S(Q_1\oplus Q_0) = $ \red{je n'arrive pas trouver cette étape} $= Q_0 \oplus (SQ_0)$\\
-
+Depuis cette table on peut en sortie les équations suivante : 
+\begin{align*}
+ Q_0^+ &= \overline{S}Q_0 + S \overline{Q_0} = S \oplus Q_0 \\
+ Q_1^+ &= \overline{S}Q_1+Q1\overline{Q0} + S\overline{Q1}Q0 =  Q1\overline{SQ0} + \overline{Q1}SQ0= Q_1 \oplus (SQ_0) 
+\end{align*}
 On peut donc établir le logigramme suivant:
 \begin{figure}[H]
 	\centering
@@ -315,32 +322,52 @@ Donnez les équations des états futurs et insérez une capture d’écran de la
 Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge)
 \\
 
-Nous avons conçu une machine d'état sur le principe d'une machine de Moore composée de 4 états. 
+Nous avons conçu une machine d'état one-hot sur le principe d'une machine de Moore composée de 4 états. 
 \begin{itemize}
 	\item "Wait"\\
 	La machine est en état d'attente jusqu'à ce que le signal "send" soit reçu.
 	\item "Start"\\
 	La machine lance la séquence d'envoi, et charge les valeurs d'entrées dans le registre.
 	\item "Send"
-	La michine compte 4 battements d'horloge.
+	La machine compte 4 battements d'horloge.
 	\item "Shift"
 	La machine envoie le signal au registre pour faire un "shift right".
 \end{itemize}
 
-\red{Photo du graph d'état à remplacer par ta version}
-\begin{figure}[H]
-	\centering
-	\includegraphics[scale=0.5]{src/graphe_etats}
-	\captionof{figure}{Graphe d'états}
-	\label{fig:graphe_etats}
-\end{figure}
+\begin{center}
 
-Sur la base de ce graphe nous avons ressortis les équations des états future suivantes:\\
-$Q_0^+ = $\\
-$Q_0^+ = $\\
-$Q_0^+ = $\\
-$Q_0^+ = $\\
-\red{compléter ces équations sur la base du graphe d'états}\\
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+                    semithick]
+  \tikzstyle{every state}=[fill=Monokaimagenta,draw=none,text=white]
+
+\node[initial,state] (A) {\makecell[l]{$Wait$\\1000}};
+\node[state] (B) [below right of = A] {\makecell[l]{$Load$\\0100}};
+\node[state] (C) [below left of = B] {\makecell[l]{$Send$\\0010}};
+\node[state] (D) [below left of = A] {\makecell[l]{$Shift$\\0001}}; 
+
+
+
+\path (A) edge [loop above] node {$0XX$} (A);
+\path (A) edge [bend left] 	node {$1XX$} (B);
+ 
+
+\path (B) edge [bend left]	node {} (C);
+\path (C) edge [loop below] node {$X00$} (C);
+\path (D) edge [bend left]	node {$X1X$} (A);
+\path (D) edge [bend left]	node {$X0X$} (C);
+\path (C) edge [bend left]	node {$XX1$} (D);
+
+    \end{tikzpicture} \\
+    $Entrees$ \\ $SC_7C_3$ \\$ XXX$
+\end{center}
+
+Sur la base de ce graphe et vu que nous avons un codage one-hot, nous avons ressortis les équations des états future suivantes:\\
+$[Wait]  Q_0^+ = Q_3C_7 + \bar{Q_3}\bar{Q_2}\bar{Q_1}\bar{S}$* \\
+$[Load ] Q_1^+ = Q_0S $\\
+$[Send]  Q_2^+ = Q_1 + Q_3\overline{C_7} + Q_2\bar{C_7}\bar{C_3}$\\
+$[Shift] Q_3^+ = Q_2C_3$\\
+
+*Ce deuxième groupe correspond à notre volonté d'être dans l'état 1000 ($Q_0$) au repos.
 
 Les entrées sorties dont nous avons besoin pour la machines d'état se retrouvent dans le bloc de la machine.
 \begin{figure}[H]
@@ -353,8 +380,8 @@ Les entrées sorties dont nous avons besoin pour la machines d'état se retrouve
 \begin{itemize}
 	\item Entrées :
 	\begin{itemize}
-		\item CPT3 : retour de la valeur de CPT3 indiquant la fin de comptage
-		\item CPT7 : retour de la valeur de CPT7 indiquant le fin du comptage
+		\item CPT3 : retour de la valeur de CPT3 indiquant le comptage à 3
+		\item CPT7 : retour de la valeur de CPT7 indiquant le comptage à 8
 		\item Send : indication du début d'un envoi (selon le bouton send)
 		\item Reset: reset de la machine d'état vers sont état d'attente ("Wait")
 		\item clk  : signal d'horloge
@@ -363,8 +390,8 @@ Les entrées sorties dont nous avons besoin pour la machines d'état se retrouve
 	\begin{itemize}
 		\item Q$_0$\_out : valeur de l'état Q$_0$, indique quand la machine est en attente
 		\item SR		 : code commande pour le registre a décalage
-		\item CPT3\_C  	 : bit de commande pour lancer le comptage de CPT3
-		\item CPT7\_C	 : bit de commande pour lancer le comptage de CPT7
+		\item CPT3\_OUT  	 : bit de commande pour lancer le comptage de CPT3
+		\item CPT7\_OUT	 : bit de commande pour lancer le comptage de CPT7
 		\item LED        : signal pour la LED, indique quand une séquence d'envoi est terminée
 	\end{itemize}
 \end{itemize}
@@ -392,6 +419,17 @@ séquence de la machine et action des états :
 	\item shift (signal au SR : "shift", CPT7 count) (1 coup d'horloge)\\
 	(entrée : CPT7) \textrightarrow\ wait
 \end{enumerate}
+\begin{tabular}{|c c c|}
+\hline
+Entrées & Etat & Sortie  (SR,C3,C7)\\
+\hline
+Send = 0 & Wait & 0000 \\
+Send = 1 & Load & 0100 \\
+CPT3,7 = 0 & Send & 0011 \\
+CPT3 = 1 CPT7 = 0& Shift & 1100 \\
+CPT7 = 1 & Wait & 0000 \\
+\hline
+\end{tabular}
 
 \end{tcolorbox}
 \section {Intégration et simulation}
