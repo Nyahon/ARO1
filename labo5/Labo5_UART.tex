@@ -101,23 +101,14 @@ De plus, l’état de repos de la ligne est fixé à 1.
 \begin{tcolorbox}[colframe=Monokaimagenta,colback=white]
 \paragraph %démarre un paragraphe
 {Spécification - Max 1/2 page } 
-Indiquez si vous réalisez la partie émetteur ou la partie récepteur de l’UART
-Placez ici les spécifications de votre circuit en décrivant son fonctionnement. Votre circuit devra être conforme à ces spécifications.\\
-
-Nous avons réalisé la partie émetteur de l'UART. Notre circuit procède à l'envoi de 8 bits successifs donnés en entrée selon la forme demandée. Le circuit envoie la valeurs zéro sur deux temps d'horloge pour indiqué le début de l'envoi au circuit récepteur. L'envoi de chaque bits ce fait ensuite sur une durée de 4 temps d'horloge. Sur le quatrième temps l'instruction "Shift-right" est transmise au shift-register de manière a envoyer le bits suivant durant la séquence d'envoi suivante.
+Nous avons réalisé la partie émetteur de l'UART. Notre circuit procède à l'envoi de 8 bits successifs donnés en entrée selon la forme demandée. Le circuit envoie la valeurs zéro sur deux temps d'horloge pour indiqué le début de l'envoi au circuit récepteur. L'envoi de chaque bits ce fait ensuite sur une durée de 4 temps d'horloge. Sur le quatrième temps l'instruction "Shift-right" est transmise au shift-register de manière a envoyer le bits suivant durant la séquence d'envoi suivante. A chaque shift on incrémente un compteur jusqu'a 7, qui nous indique la fin de la transmission et le retour à l'état d'attente.
 %fin de l'encadré
 \end{tcolorbox}
 
 \section{Architecture}\
 
 \begin{tcolorbox}[colframe=Monokaimagenta,colback=white]
-\paragraph{Architecture - Max 1/2 page}
-Dessinez le schéma bloc complet de votre circuit. Ce circuit contient entre autre : shift-register, compteurs et machine d’état, avec les bus de données et les signaux de contrôle. Vous pouvez faire ce schéma bloc à la main (très proprement), ou en utilisant Logisim (mais avec le nom des signaux), ou avec un outil de dessin de votre choix.
-
-Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge)\\
-
-
-
+\paragraph{Architecture - Max 1/2 page} 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{src/schema_UART}
@@ -193,7 +184,7 @@ Insérez une capture d’écran pour présenter votre bloc compteur 0-3. Expliqu
 Indiquez comment vous avez testé les différents modes de fonctionnement afin de le valider. Vous pouvez ajouter un chronogramme.
 Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge)\\
 
-\red{Notre compteur n'a pas l'entrée de remise à zéro synchrone. Il se remet à zéro d'office quand on ne compte pas.}\\
+
 
 Le compteur 0-3 que nous avons implémenté, reçoit comme entrées l'indication de compter, et transmet en sortie la valeur à laquelle il se trouve ainsi qu'un bit indiquant le compteur à terminé de compter jusqu'à 3.\\	
 \begin{figure}[H]
@@ -212,10 +203,10 @@ Selon les besoins du laboratoire et pour des raison d'optimisation si la valeur 
 \end{figure}
 Ce chronogram illustre le fonctionnement du compteur et met en évidence la remise à zéro automatique du compteur.
 
-\red{Si tu as encore ton schéma ou ta table d'état sur la base du quel t'as conçu le compteur il faudrait le mettre sinon on le refera.}\\
+
 \begin{multicols}{2}
 	\begin{tabular}{c|l l}
-		$C,Q1,Q0$ & $Q1^+$& $Q0^+$ \\
+		$C,Q_1,Q_0$ & $Q_1^+$& $Q_0^+$ \\
 		\hline
 		100	&	0&1\\
 		101	&	1&0\\
@@ -224,12 +215,12 @@ Ce chronogram illustre le fonctionnement du compteur et met en évidence la remi
 	\end{tabular}
 	
 
-	\begin{equation}
-	Q1^+ = C(Q0 + Q1)
-	\end{equation}
-		\begin{equation}
-			Q0^+ = C\overline{Q0}
-		\end{equation}
+	\begin{equation*}
+	Q_1^+ = C(Q_0 + Q_1)
+	\end{equation*}
+		\begin{equation*}
+			Q_0^+ = C\overline{Q_0}
+		\end{equation*}
 
 \end{multicols}
 Pour des raisons de conception de notre machine d'état, la transition entre l'état dans lequel le compteur compte et le celui ou le shift de la valeur se fait, nécessite un battement d'horloge. De ce fait nous avons utilisé un compteur qui donne l'indication de fin de comptage a 2 et non 3, cela étant illustré par la porte not du and de sortie.
@@ -409,7 +400,7 @@ séquence de la machine et action des états :
 \begin{enumerate}
 	\item wait (aucune action)\\
 	(entrée : send) \textrightarrow\ start
-	\item start (signal au SR "Load", 2 coup d'horloge)
+	\item start (signal au SR "Load", bin\_out à 0, 2 coup d'horloge)
 	\item send (signal a CPT3\_C "count")\\
 	(entrée : CPT3) \textrightarrow\ shift
 	\item shift (signal au SR : "shift", CPT7 count) (1 coup d'horloge)\\
@@ -419,15 +410,15 @@ séquence de la machine et action des états :
 	\item shift (signal au SR : "shift", CPT7 count) (1 coup d'horloge)\\
 	(entrée : CPT7) \textrightarrow\ wait
 \end{enumerate}
-\begin{tabular}{|c c c|}
+\begin{tabular}{|c c c c|}
 \hline
-Entrées & Etat & Sortie  (SR,C3,C7)\\
+Entrées & Etat & Sortie  (SR,C3,C7) & Commentaire\\
 \hline
-Send = 0 & Wait & 0000 \\
-Send = 1 & Load & 0100 \\
-CPT3,7 = 0 & Send & 0011 \\
-CPT3 = 1 CPT7 = 0& Shift & 1100 \\
-CPT7 = 1 & Wait & 0000 \\
+Send = 0 & Wait & 00 0 0 & 1 tick\\
+Send = 1 & Load & 01 0 0 & 1 tick\\
+CPT3,7 = 0 & Send & 00 1 0 & compte a 3\\
+CPT3 = 1 CPT7 = 0& Shift & 11 0 1 & 1 tick\\
+CPT7 = 1 & Wait & 00 0 0 & compte a 8\\
 \hline
 \end{tabular}
 
@@ -452,10 +443,10 @@ Avec tous les éléments implémentés précédemment nous les avons combiné de
 
 \begin{itemize}
 	\item le signal "reset" permet de remettre tout l'unité dans son mode d'attente prête à envoyer une séquence.
-	\item le signal "send" transmet à la machine d'état de sortir du mode d'attente et de commencer à envoyer la séquence.
-	\item l'envoi se fait par la sortie Bin\_out selon l'avancement de a machine d'état et les valeurs entrées dans le bus "entry".
+	\item le signal "send" transmet à la machine d'état de sortir du mode d'attente et de commencer à envoyer la séquence. Quand il est à zéro, on reste dans l'état d'attente $Q_0$. Il n'est pas nécessaire d'avoir le signal a 1 tout au long de l'envoi, mais cela ne changerait rien dans le cas.
+	\item l'envoi se fait par la sortie Bin\_out selon l'avancement de a machine d'état et les valeurs entrées dans le bus "entry". La construction de portes logiques utilisant Q0\_out permet d'avoir un état au repos = 1 et égal à 0 pendant deux coups d'horloges pour signifier le début du chargement.
 	\item une fois la séquence terminée la machine d'état envoie le signal de fin par la sortie "LED" et repasse en mode d'attente.
-	\item le signal sur Bin\_out est alors à 1 selon la combinaison du signal "SR" de la machine d'état et de la valeur Q$_0$\_out qui est à 1.
+	\item le signal sur Bin\_out est alors à 1 selon la combinaison du signal "SR" de la machine d'état et de la valeur Q$_0$\_out qui est à 1. La figure suivante montre que l'on obtient 0 pendant le Load et 1 le reste du temps.
 \end{itemize}
 \begin{figure}[H]
 	\centering
@@ -484,8 +475,18 @@ L’UART finalement synthétisé et chargé dans une carte, une carte émetteur 
 \paragraph{Essais avec une carte - Max 1 page}
 Indiquez comment vous faites le test (et avec un groupe différent de la simulation). Quelles données choisissez-vous pour faire les essais ?Vous devez faire valider votre circuit en fonctionnement au professeur ou à l’assistant
 Commentez brièvement votre expérience dans cette étape en mentionnant, par exemple, des éventuelles difficultés à faire fonctionner le circuit ou à configurer la carte, etc.
-Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge)
-\\
+Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge) \\
+Au moment des tests, notre émetteur étant encore légèrement buggé, il a été impossible de procéder à des tests constructifs. Après de mineurs ajustements (clock sur 4 temps et non pas 5 et ajout de la valeur 1 pour la sortie au repos), un test a été réalisé avec le récepteur de l'assistant. \\
+On a pu constater le succès de la transmission de plusieurs valeurs de suite (192 et 193 entre autres), démontrant
+le fonctionnement correct des différentes fonctionnalités (reset, send,..). \\
+On a profité des différentes led en dessus des boutons de valeurs pour afficher les valeurs de nos compteurs, permettant une vérification plus clair du bon déroulement de l'expérience (n'en ayant pas besoin autrement sur l'émetteur).
+L'entiereté de la partie chargement sur carte n'a pas posé problème, ayant déjà pratiqué cela dans un précédent laboratoire. 
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.2]{src/FPGA.jpg}
+	\captionof{figure}{logiciel sur carte en transmission}
+	\label{fig:FPGA}
+\end{figure}
 \end{tcolorbox}
 \section {Conclusion}
 \begin{tcolorbox}[colframe=Monokaimagenta,colback=white, breakable, enhanced]
@@ -501,6 +502,13 @@ Analysez votre travail, votre implication
 Evitez les banalités et les lieux communs
 ETCAETERA…
 \\
+On retrouve dans ce laboratoire une excellente mise en pratique des systèmes séquentiels. \\
+La difficulté principale (pour nous) s'est posée dans la modélisation du problème par un graphe d'état. La première itération utilisait 5 états différents, mais on s'est rapidement rendu compte que 4 états suffisaient. \\
+Cela fait, le codage en lui-même sur logisim n'était presque qu'une formalité, nos équations étant particulièrement valable (le seul rajout qui a été fait par après fut le groupe qui nous met dans l'état $Q_0$ en attente, au lieu de rester dans un état 0000 inexistant). \\
+Il est très gratifiant de passer d'une conception de l'esprit à une machine entièrement fonctionnel permettant de communiquer avec une autre en sachant précisement comment tout fonctionne, des portes logiques aux bascules bistables. \\
+Ce laboratoire nous a permis de nous rendre compte de comment créer une notion de temporalité dans des systèmes combinatoires et en faire des systèmes séquentiels. \\
+
 \end{tcolorbox}
+
 
 \end{document}
