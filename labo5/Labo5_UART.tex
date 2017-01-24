@@ -467,6 +467,26 @@ Indiquez comment vous simulez votre UART sous Logisim (seul ou avec le générat
 Insérez un ou plusieurs chronogrammes, annotez-le(s) et expliquez pourquoi le fonctionnement est correct et conforme aux spécifications.
 Remplacez le texte ci-dessus par vos réponses (à l’intérieur du cadre rouge)
 \\
+
+Nous avons utilisé le récepteur du groupe de Julen Biefer et Léo Cortes afin de tester dans logisim la transmission du signal.\\
+Pour ce fait nous les avons regroupés et testé le bon fonctionnement de notre circuit. Ce regroupment est fait dans le fichier Labo\_5\_2circ\_Meyer\_Schar.circ.
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{src/Logigram_TR}
+	\captionof{figure}{Logigram Emetteur Récepeteur}
+	\label{fig:Logigram_TR}
+\end{figure}
+
+Pour illustrer la transmission nous avons effectuer un test mis en évidence ici sous la forme d'un logrigram.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{src/chrono_TR1}
+	\captionof{figure}{Chronogram Emetteur Récepteur}
+	\label{fig:chrono_TR1}
+\end{figure}
+On peut voir clairement qu'après un reset, la valeur 0x55 est envoyée selon la séquence demandée et reçue en fin de séquence par le récepteur. La fin de la transmission est mise en évidence par la LED qui s'allume.
+
+
 \end{tcolorbox}
  \subsection{Synthèse et test de fonctionnement réel}
 Synthèse et configuration du matériel, test de fonctionnement.
