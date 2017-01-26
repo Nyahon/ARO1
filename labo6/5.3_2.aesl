@@ -1,0 +1,151 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+
+
+<!--list of constants-->
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node thymio-II-->
+<node nodeId="1" name="thymio-II">var state1 = 00
+var new_state1 = 00
+
+var state2 = 0
+var new_state2 = 0
+
+# reset outputs
+call sound.system(-1)
+call leds.top(0,0,0)
+call leds.bottom.left(0,0,0)
+call leds.bottom.right(0,0,0)
+call leds.circle(0,0,0,0,0,0,0,0)
+
+onevent buttons
+	if state1 == 00 then
+	#wait
+		motor.left.target = 0
+		motor.right.target = 0
+		
+			when button.center == 1 do
+				new_state1 = 01
+				
+		end
+	end
+	if  state1 == 01 then
+			#run LDown
+			motor.left.target = 100
+			motor.right.target = 100
+			
+				when button.center == 1 do
+					new_state1 = 00
+			end
+	end
+	if  state1 == 10 then
+			#run LUP
+				motor.left.target = 100
+				motor.right.target = 100
+				
+					when button.center == 1 do
+						new_state1 = 00
+					end
+	end
+		state1 = new_state1
+		
+onevent prox
+	if state1 == 01 then
+		#LDown
+		call leds.top(0,0,0)
+	
+		# CG and CD
+		when prox.ground.delta[1] &lt;= 400 do #black line
+			new_state1 = 10
+		end
+		# !CD 
+		when prox.ground.delta[1] >= 450 do
+			new_state1 = 01
+		end
+	end
+	
+	if state1 == 10 then
+		#LUp
+		call leds.top(32,0,0)
+		
+		# CG and CD
+		when prox.ground.delta[1] &lt;= 400 do #black line
+			new_state1 = 10
+		end
+		# !CG
+		when prox.ground.delta[1] &lt;= 400 do #black line
+			new_state1 = 10
+		end
+		# CG and !CD
+		when prox.ground.delta[0] &lt;= 400 and prox.ground.delta[1] >= 450 do
+			new_state1 = 01
+		end
+	end
+state1 = new_state1
+	
+	if state2 == 0 then
+		when prox.ground.delta[1] &lt;= 400 do #black line
+			new_state2 = 0
+		end
+		when prox.ground.delta[1] >= 450 do 
+			new_state2 = 1
+		end
+	end
+   if state2 == 1 then
+		when prox.ground.delta[1] &lt;= 400 do #black line
+			new_state2 = 2
+		end
+		when prox.ground.delta[1] >= 450 do 
+			new_state2 = 1
+		end
+	end
+	if state2 == 2 then
+		when prox.ground.delta[1] &lt;= 400 do  #black line
+			new_state2 = 0
+		end
+		when prox.ground.delta[1] >= 450 do
+			new_state2 = 3
+		end
+	end
+	if state2 == 3 then
+		when prox.ground.delta[1] &lt;= 400 do #black line
+			new_state2 = 4
+		end
+		when prox.ground.delta[1] >= 450 do 
+			new_state2 = 1
+		end
+	end
+	if state2 == 4 then
+		when prox.ground.delta[1] &lt;= 400 do #black line
+			new_state2 = 5
+		end
+		when prox.ground.delta[1] >= 450 do 
+			new_state2 = 3
+		end
+	end
+	if state2 == 5 then
+	call leds.top(0,32,0)
+		when prox.ground.delta[1] &lt;= 400 do #black line
+			new_state2 = 0
+		end
+		when prox.ground.delta[1] >= 450 do 
+			new_state2 = 1
+		end
+	end
+state2 = new_state2
+
+	
+
+
+</node>
+
+
+</network>

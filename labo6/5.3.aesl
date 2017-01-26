@@ -1,0 +1,51 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+
+
+<!--list of constants-->
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node thymio-II-->
+<node nodeId="1" name="thymio-II">var stat1 = 00
+var new_stat1 = 00
+
+	
+	if stat1 = 00 then
+	#wait
+		motor.left.target = 0
+		motor.right.target = 0
+		onevent buttons
+			when button.center == 1 do
+				new_stat1 = 01
+				
+		end
+	end
+	if  stat1 == 01 then
+			#run LDown
+			motor.left.target = 50
+			motor.right.target = 50
+			
+			onevent buttons
+				when button.center == 1 do
+					new_stat1 = 00
+			
+	end
+	if  stat1 == 10 then
+			#run LUP
+				motor.left.target = 50
+				motor.right.target = 50
+				onevent buttons
+					when button.center == 1 do
+						new_stat1 = 00
+	end
+		stat1 = new_stat1</node>
+
+
+</network>

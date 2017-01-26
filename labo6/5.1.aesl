@@ -1,0 +1,68 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+
+
+<!--list of constants-->
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node thymio-II-->
+<node nodeId="1" name="thymio-II">#déclaration des variables état
+var state = 000
+var new_state = 000
+ 
+#initialisation à 0 des capteurs et des leds
+motor.left.target = 0
+motor.right.target = 0
+ 
+#si un bouton est pressé
+onevent buttons
+	when button.forward == 1 do
+  if state == 000 then
+ 		motor.left.target = 0
+		motor.right.target = 0
+		new_state = 001
+ 	end
+ 	 if state == 001 then
+ 		motor.left.target = 150
+		motor.right.target = 150
+		new_state = 010
+ 	end
+  if state == 010 then
+ 		motor.left.target = 300
+		motor.right.target = 300
+		new_state = 011
+ 	end
+  if state == 011 then
+ 		motor.left.target = 450
+		motor.right.target = 450
+		new_state = 100
+ 	end
+  if state == 100 then
+ 		motor.left.target = 300
+		motor.right.target = 300
+		new_state = 101
+ 	end
+  if state == 101 then
+ 		motor.left.target = 150
+		motor.right.target = 150
+		new_state = 000
+ 	end
+ state = new_state
+ end
+
+
+ 
+ 
+ 
+
+ </node>
+
+
+</network>
